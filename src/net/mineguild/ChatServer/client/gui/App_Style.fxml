@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <BorderPane BorderPane.alignment="CENTER">
+         <right>
+            <Button mnemonicParsing="false" text="Send (Enter)" BorderPane.alignment="CENTER" onAction="#handleSend" />
+         </right>
+         <center>
+            <TextField promptText="Message here" BorderPane.alignment="CENTER" fx:id="inputField" onAction="#handleSend"/>
+         </center>
+      </BorderPane>
+   </bottom>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" onAction="#handleClose" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <TextArea BorderPane.alignment="CENTER" fx:id="messageArea"/>
+   </center>
+</BorderPane>

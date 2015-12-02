@@ -9,39 +9,41 @@ import java.util.List;
 public class Server implements Sender {
     int port = 7785;
     private ServerSocket serverSocket;
-    private List<ClientProcess> clients;
+    private final List<ClientProcess> clients;
 
-    public Server(){
+    public Server() {
         clients = new ArrayList<>();
     }
 
-    public void openServer(){
+    public void openServer() {
         try {
             serverSocket = new ServerSocket(port);
-        } catch (IOException e){
-            System.err.println("Unable open ServerSocket!"+e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Unable open ServerSocket!" + e.getMessage());
         }
     }
 
-    public void acceptClient(){
+    public void acceptClient() {
         try {
             Socket clientSocket = serverSocket.accept();
             ClientProcess process = new ClientProcess(clientSocket, this);
-            clients.add(process);
+            synchronized (clients) {
+                clients.add(process);
+            }
             process.start();
-        } catch (IOException e){
-            System.err.println("Can't accept Client!"+e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Can't accept Client!" + e.getMessage());
         }
     }
 
-    public synchronized void handleDisconnect(ClientProcess client){
+    public synchronized void handleDisconnect(ClientProcess client) {
         clients.remove(client);
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Server server = new Server();
         server.openServer();
-        while(true){
+        while (true) {
             server.acceptClient();
         }
     }
@@ -52,9 +54,28 @@ public class Server implements Sender {
         });
     }
 
+    public boolean isNameUsed(String name) {
+        for (ClientProcess client : clients) {
+            if (name.equals(client.getSenderName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<String> getClientNames() {
+        List<String> names = new ArrayList<>();
+        synchronized (clients) {
+            for (ClientProcess client : clients) {
+                names.add(client.getSenderName());
+            }
+        }
+        return names;
+    }
+
     @Override
     public void sendMessage(String message) {
-        System.out.println(">"+message);
+        System.out.println(">" + message);
     }
 
     @Override
