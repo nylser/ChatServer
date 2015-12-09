@@ -1,5 +1,6 @@
 package net.mineguild.ChatServer.server;
 
+import javax.net.ssl.SSLSocket;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,14 +12,16 @@ public class ClientProcess extends Thread implements Sender {
     private Socket socket;
     private Server server;
     private String name = "";
+    private boolean isEncrypted;
 
     private BufferedReader input;
     private PrintWriter output;
 
-    public ClientProcess(Socket socket, Server server)throws IOException{
+    public ClientProcess(Socket socket, Server server, String name)throws IOException{
         this.socket = socket;
-        name = socket.getInetAddress().toString();
         this.server = server;
+        this.name = name;
+        isEncrypted = socket instanceof SSLSocket;
         input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         output = new PrintWriter(socket.getOutputStream());
     }
@@ -27,14 +30,6 @@ public class ClientProcess extends Thread implements Sender {
     @Override
     public void run(){
         try {
-            String localName = input.readLine();
-            if(server.isNameUsed(localName)){
-                sendMessage("name_used");
-                socket.close();
-            } else {
-                sendMessage("ok");
-                name = localName;
-            }
             System.out.println(name+ " connected");
             server.broadcastMessage(server, name+ " connected!");
             String message;
@@ -65,6 +60,8 @@ public class ClientProcess extends Thread implements Sender {
         server.handleDisconnect(this);
     }
 
+
+
     @Override
     public void sendMessage(String message) {
         output.println(message);
@@ -74,5 +71,9 @@ public class ClientProcess extends Thread implements Sender {
     @Override
     public String getSenderName(){
         return this.name;
+    }
+
+    public boolean isEncrypted() {
+        return isEncrypted;
     }
 }
