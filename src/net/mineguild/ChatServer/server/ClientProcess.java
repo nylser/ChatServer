@@ -47,6 +47,16 @@ public class ClientProcess extends Thread implements Sender {
                             }
                         }
                         sendMessage(builder.toString());
+                    } else if (message.startsWith("/msg")){
+                        try {
+                            String name = message.split(" ")[1];
+                            if (server.isNameUsed(name)) {
+                                server.broadcastMessage(this, message.split(" ", 3)[2], name);
+                            }
+                        } catch (Exception e2){
+                            e2.printStackTrace();
+                            sendMessage("Invalid command syntax! /msg [name] [message]");
+                        }
                     }
                 } else {
                     server.broadcastMessage(this, message);

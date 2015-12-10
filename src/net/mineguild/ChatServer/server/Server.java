@@ -56,7 +56,7 @@ public class Server implements Sender {
         Thread encrypted = new Thread(()-> {
           try{
               System.setProperty("javax.net.ssl.keyStore", "MGKey.store");
-              System.setProperty("javax.net.ssl.keyStorePassword", "password");
+              System.setProperty("javax.net.ssl.keyStorePassword", "kantar11");
               ServerSocket serverSocket;
               if(System.getProperties().containsKey("javax.net.ssl.keyStore") && System.getProperties().containsKey("javax.net.ssl.keyStorePassword")) {
                   SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
@@ -73,7 +73,7 @@ public class Server implements Sender {
         encrypted.start();
     }
 
-    public void broadcastMessage(Sender sender, String message) {
+    public synchronized void broadcastMessage(Sender sender, String message) {
         if(sender instanceof ClientProcess && ((ClientProcess) sender).isEncrypted()){
             clients.values().stream().filter(clientProcess -> clientProcess.isEncrypted()).forEach(client -> {
                 client.sendMessage(sender.getSenderName() + "> " + message);
@@ -87,6 +87,10 @@ public class Server implements Sender {
                 client.sendMessage(sender.getSenderName() + "> " + message);
             });
         }
+    }
+
+    public synchronized void broadcastMessage(Sender sender, String message, String receiver){
+        clients.get(receiver).sendMessage("[WHISPER] " + sender.getSenderName() + "> "+message);
     }
 
     public synchronized boolean isNameUsed(String name) {

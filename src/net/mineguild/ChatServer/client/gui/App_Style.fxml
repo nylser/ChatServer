@@ -12,7 +12,8 @@
             <Button mnemonicParsing="false" onAction="#handleSend" text="Send (Enter)" BorderPane.alignment="CENTER" />
          </right>
          <center>
-            <TextField fx:id="inputField" onAction="#handleSend" promptText="Message here" BorderPane.alignment="CENTER" />
+            <TextField fx:id="inputField" onAction="#handleSend" promptText="Message here" BorderPane.alignment="CENTER" onKeyPressed="#handleKey"
+            />
          </center>
       </BorderPane>
    </bottom>
@@ -38,6 +39,6 @@
       </MenuBar>
    </top>
    <center>
-      <TextArea fx:id="messageArea" editable="false" wrapText="true" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="messageArea" editable="false" wrapText="true" BorderPane.alignment="CENTER"  />
    </center>
 </BorderPane>

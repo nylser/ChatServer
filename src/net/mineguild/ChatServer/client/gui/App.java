@@ -53,9 +53,9 @@ public class App extends Application {
         ChoiceDialog<String> choiceDialog = new ChoiceDialog("SSL", "Normal", "SSL");
         choiceDialog.showAndWait();
         if(choiceDialog.getSelectedItem().equalsIgnoreCase("SSL")) {
-            socket = openSSLConnection("play.mineguild.net", 7885);
+            socket = openSSLConnection("localhost", 7885);
         } else {
-            socket = openConnection("play.mineguild.net", 7785);
+            socket = openConnection("localhost", 7785);
         }
         if (socket == null) return;
 
