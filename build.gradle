@@ -1,0 +1,8 @@
+apply plugin: 'idea'
+//and standard one
+apply plugin: 'java'
+sourceCompatibility = 1.8
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.5'
+}
+

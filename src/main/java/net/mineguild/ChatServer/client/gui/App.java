@@ -36,9 +36,6 @@ public class App extends Application {
         //System.setProperty("https.protocols", "TLSv1");
         Optional<String> stringOptional;
         TextInputDialog inputDialog = new TextInputDialog();
-        inputDialog.getEditor().setOnInputMethodTextChanged((event)->{
-            String text = inputDialog.getEditor().getText();
-        });
         inputDialog.setHeaderText("Choose a name");
         inputDialog.setContentText("Please enter a username:");
         inputDialog.setTitle("Username");
@@ -53,9 +50,9 @@ public class App extends Application {
         ChoiceDialog<String> choiceDialog = new ChoiceDialog("SSL", "Normal", "SSL");
         choiceDialog.showAndWait();
         if(choiceDialog.getSelectedItem().equalsIgnoreCase("SSL")) {
-            socket = openSSLConnection("localhost", 7885);
+            socket = openSSLConnection("ftps.mineguild.net", 7885);
         } else {
-            socket = openConnection("localhost", 7785);
+            socket = openConnection("ftps.mineguild.net", 7785);
         }
         if (socket == null) return;
 
