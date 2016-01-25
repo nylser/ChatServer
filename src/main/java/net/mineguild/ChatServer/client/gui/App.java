@@ -36,9 +36,6 @@ public class App extends Application {
         //System.setProperty("https.protocols", "TLSv1");
         Optional<String> stringOptional;
         TextInputDialog inputDialog = new TextInputDialog();
-        inputDialog.getEditor().setOnInputMethodTextChanged((event)->{
-            String text = inputDialog.getEditor().getText();
-        });
         inputDialog.setHeaderText("Choose a name");
         inputDialog.setContentText("Please enter a username:");
         inputDialog.setTitle("Username");
