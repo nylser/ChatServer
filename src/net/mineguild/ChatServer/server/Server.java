@@ -75,7 +75,7 @@ public class Server implements Sender {
 
     public synchronized void broadcastMessage(Sender sender, String message) {
         if(sender instanceof ClientProcess && ((ClientProcess) sender).isEncrypted()){
-            clients.values().stream().filter(clientProcess -> clientProcess.isEncrypted()).forEach(client -> {
+            clients.values().stream().filter(ClientProcess::isEncrypted).forEach(client -> {
                 client.sendMessage(sender.getSenderName() + "> " + message);
             });
             clients.values().stream().filter(client -> !client.isEncrypted()).forEach(client -> {

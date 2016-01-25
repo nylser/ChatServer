@@ -50,12 +50,12 @@ public class App extends Application {
             Platform.exit();
         }
         name = stringOptional.get();
-        ChoiceDialog<String> choiceDialog = new ChoiceDialog("SSL", "Normal", "SSL");
+        ChoiceDialog<String> choiceDialog = new ChoiceDialog<>("SSL", "Normal", "SSL");
         choiceDialog.showAndWait();
         if(choiceDialog.getSelectedItem().equalsIgnoreCase("SSL")) {
-            socket = openSSLConnection("localhost", 7885);
+            socket = openSSLConnection("ftps.mineguild.net", 7885);
         } else {
-            socket = openConnection("localhost", 7785);
+            socket = openConnection("ftps.mineguild.net", 7785);
         }
         if (socket == null) return;
 
