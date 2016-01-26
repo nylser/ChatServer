@@ -1,9 +1,11 @@
 package net.mineguild.ChatServer.server;
 
 import javax.net.ssl.SSLServerSocketFactory;
+import javax.swing.text.html.Option;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -20,15 +22,30 @@ public class Server implements Sender {
         while(true){
             try {
                 Socket clientSocket = serverSocket.accept();
-                Optional<String> name = negotiateName(clientSocket);
-                if (name.isPresent()) {
-                    startClient(clientSocket, name.get());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
+                String input = reader.readLine();
+                if(input.startsWith("/return")){
+                    Optional<ClientProcess> clientProcess = clients.values().stream().filter(client -> client.getSuspended() && client.getSuspendedID().equals(input.split(" ")[1])).findFirst();
+                    if(clientProcess.isPresent()) {
+                        writer.println("return_ok");
+                        clientProcess.get().refreshSocket(clientSocket);
+                        clientProcess.get().start();
+                    } else {
+                        writer.println("return_not_found");
+                    }
+
                 } else {
-                    clientSocket.close();
+                    Optional<String> name = negotiateName(input, writer);
+                    if (name.isPresent()) {
+                        startClient(clientSocket, name.get());
+                    } else {
+                        clientSocket.close();
+                    }
                 }
             } catch (IOException e){
                 e.printStackTrace();
-                System.err.println("Error in Server Thread!");
+                System.err.println("Error in Server Thread! Continuing...");
             }
         }
     }
@@ -97,14 +114,12 @@ public class Server implements Sender {
         return clients.containsKey(name);
     }
 
-    public Optional<String> negotiateName(Socket clientSocket) throws IOException {
-        BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        String name = input.readLine();
+    public Optional<String> negotiateName(String name, PrintWriter out) throws IOException {
         if(!isNameUsed(name)){
-            clientSocket.getOutputStream().write("ok\n".getBytes());
+            out.println("ok");
             return Optional.of(name);
         } else {
-            clientSocket.getOutputStream().write("name_used\n".getBytes());
+            out.println("name_used");
             return Optional.empty();
         }
     }
